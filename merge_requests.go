@@ -4,10 +4,15 @@ import (
 	"context"
 
 	gitlab "gitlab.com/gitlab-org/api/client-go"
+	"golang.org/x/sync/errgroup"
 )
+
+const mergeRequestApprovalConcurrency = 4
 
 // GatherOpenMergeRequests fetches all open merge requests for a project, enriched with
 // per-MR approval state so policies can reason over approval rules and approvers.
+// Approval state lookups are done with bounded concurrency to reduce latency on
+// projects with many open merge requests without overwhelming the GitLab API.
 func (l *GitLabReposPlugin) GatherOpenMergeRequests(ctx context.Context, project *gitlab.Project) ([]*OpenMergeRequest, error) {
 	opts := &gitlab.ListProjectMergeRequestsOptions{
 		ListOptions: gitlab.ListOptions{PerPage: 100, Page: 1},
@@ -31,23 +36,36 @@ func (l *GitLabReposPlugin) GatherOpenMergeRequests(ctx context.Context, project
 		opts.Page = resp.NextPage
 	}
 
-	result := make([]*OpenMergeRequest, 0, len(mrs))
+	filtered := make([]*gitlab.BasicMergeRequest, 0, len(mrs))
 	for _, mr := range mrs {
 		if mr == nil {
 			continue
 		}
+		filtered = append(filtered, mr)
+	}
 
-		state, _, err := l.client.MergeRequestApprovals.GetApprovalState(project.ID, mr.IID, gitlab.WithContext(ctx))
-		if err != nil {
-			l.Logger.Warn("Could not fetch approval state for MR", "project", project.PathWithNamespace, "mr_iid", mr.IID, "error", err)
-			result = append(result, &OpenMergeRequest{BasicMergeRequest: mr})
-			continue
-		}
+	result := make([]*OpenMergeRequest, len(filtered))
+	group, groupCtx := errgroup.WithContext(ctx)
+	group.SetLimit(mergeRequestApprovalConcurrency)
 
-		result = append(result, &OpenMergeRequest{
-			BasicMergeRequest: mr,
-			ApprovalState:     state,
+	for i, mr := range filtered {
+		i, mr := i, mr
+		result[i] = &OpenMergeRequest{BasicMergeRequest: mr}
+
+		group.Go(func() error {
+			state, _, err := l.client.MergeRequestApprovals.GetApprovalState(project.ID, mr.IID, gitlab.WithContext(groupCtx))
+			if err != nil {
+				l.Logger.Warn("Could not fetch approval state for MR", "project", project.PathWithNamespace, "mr_iid", mr.IID, "error", err)
+				return nil
+			}
+
+			result[i].ApprovalState = state
+			return nil
 		})
+	}
+
+	if err := group.Wait(); err != nil {
+		return nil, err
 	}
 
 	return result, nil

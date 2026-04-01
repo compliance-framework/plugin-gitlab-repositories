@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 
 	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
@@ -42,8 +43,7 @@ func (l *GitLabReposPlugin) FetchCodeOwners(ctx context.Context, project *gitlab
 		if file.Encoding == "base64" {
 			decoded, err := base64.StdEncoding.DecodeString(file.Content)
 			if err != nil {
-				// Return raw content if decoding fails
-				return file.Content, nil
+				return "", fmt.Errorf("decode CODEOWNERS at %q for project %d: %w", path, project.ID, err)
 			}
 			return string(decoded), nil
 		}

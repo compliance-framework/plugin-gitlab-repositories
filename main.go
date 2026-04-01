@@ -105,9 +105,38 @@ func (c *PluginConfig) parsePipelineConfig() error {
 		if err != nil {
 			return fmt.Errorf("invalid pipeline_lookback_days: %w", err)
 		}
+		if days <= 0 {
+			return fmt.Errorf("invalid pipeline_lookback_days: must be > 0, got %d", days)
+		}
 		c.pipelineLookbackDays = days
 	}
 	return nil
+}
+
+func parseCommaSeparatedList(list string) []string {
+	if list == "" {
+		return nil
+	}
+
+	result := make([]string, 0)
+	for _, item := range strings.Split(list, ",") {
+		trimmed := strings.TrimSpace(item)
+		if trimmed == "" {
+			continue
+		}
+		result = append(result, trimmed)
+	}
+	if len(result) == 0 {
+		return nil
+	}
+	return result
+}
+
+func oauthTokenURL(baseURL string) string {
+	if baseURL == "" {
+		return "https://gitlab.com/oauth/token"
+	}
+	return strings.TrimRight(baseURL, "/") + "/oauth/token"
 }
 
 type GitLabReposPlugin struct {
@@ -185,16 +214,11 @@ func (l *GitLabReposPlugin) buildGitLabClient(config *PluginConfig, opts []gitla
 		return client, nil
 
 	case AuthTypeClientCredentials:
-		tokenURL := config.BaseURL + "/oauth/token"
-		if config.BaseURL == "" {
-			tokenURL = "https://gitlab.com/oauth/token"
-		}
-
 		ccConfig := &clientcredentials.Config{
 			ClientID:     config.ClientID,
 			ClientSecret: config.ClientSecret,
-			TokenURL:     tokenURL,
-			Scopes:       strings.Split(config.Scopes, ","),
+			TokenURL:     oauthTokenURL(config.BaseURL),
+			Scopes:       parseCommaSeparatedList(config.Scopes),
 		}
 
 		// TokenSource is lazy — eagerly call Token() once to validate the credentials
@@ -264,7 +288,8 @@ func (l *GitLabReposPlugin) Init(req *proto.InitRequest, apiHelper runner.ApiHel
 }
 
 func (l *GitLabReposPlugin) Eval(req *proto.EvalRequest, apiHelper runner.ApiHelper) (*proto.EvalResponse, error) {
-	ctx := context.TODO()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	groupMembers, err := l.GatherGroupMembers(ctx)
 	if err != nil {
@@ -435,13 +460,8 @@ func (l *GitLabReposPlugin) FetchProjects(ctx context.Context) (chan *gitlab.Pro
 	projectChan := make(chan *gitlab.Project)
 	errChan := make(chan error)
 
-	var included, excluded []string
-	if l.config.IncludedRepositories != "" {
-		included = strings.Split(l.config.IncludedRepositories, ",")
-	}
-	if l.config.ExcludedRepositories != "" {
-		excluded = strings.Split(l.config.ExcludedRepositories, ",")
-	}
+	included := parseCommaSeparatedList(l.config.IncludedRepositories)
+	excluded := parseCommaSeparatedList(l.config.ExcludedRepositories)
 
 	go func() {
 		defer close(projectChan)
@@ -455,7 +475,10 @@ func (l *GitLabReposPlugin) FetchProjects(ctx context.Context) (chan *gitlab.Pro
 		for {
 			projects, resp, err := l.client.Groups.ListGroupProjects(l.groupRef(), opts, gitlab.WithContext(ctx))
 			if err != nil {
-				errChan <- err
+				select {
+				case errChan <- err:
+				case <-ctx.Done():
+				}
 				return
 			}
 
@@ -472,7 +495,11 @@ func (l *GitLabReposPlugin) FetchProjects(ctx context.Context) (chan *gitlab.Pro
 					continue
 				}
 
-				projectChan <- project
+				select {
+				case projectChan <- project:
+				case <-ctx.Done():
+					return
+				}
 			}
 
 			if resp.NextPage == 0 {
@@ -660,7 +687,7 @@ func (l *GitLabReposPlugin) EvaluatePolicies(ctx context.Context, data *Saturate
 			Steps: []*proto.Step{
 				{
 					Title:       "Authenticate with GitLab",
-					Description: "Authenticate with the GitLab API using a personal access token.",
+					Description: "Authenticate with the GitLab API using configured credentials.",
 				},
 				{
 					Title:       "Fetch Project Details",

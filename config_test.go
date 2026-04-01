@@ -128,4 +128,20 @@ func TestPluginConfig_ParsePipelineConfig(t *testing.T) {
 			t.Error("expected error, got nil")
 		}
 	})
+
+	t.Run("returns error for zero value", func(t *testing.T) {
+		t.Parallel()
+		c := &PluginConfig{PipelineLookbackDays: "0"}
+		if err := c.parsePipelineConfig(); err == nil {
+			t.Error("expected error, got nil")
+		}
+	})
+
+	t.Run("returns error for negative value", func(t *testing.T) {
+		t.Parallel()
+		c := &PluginConfig{PipelineLookbackDays: "-7"}
+		if err := c.parsePipelineConfig(); err == nil {
+			t.Error("expected error, got nil")
+		}
+	})
 }

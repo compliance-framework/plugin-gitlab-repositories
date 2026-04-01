@@ -5,8 +5,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -50,6 +52,15 @@ func writeJSON(w http.ResponseWriter, v any) {
 	if err := json.NewEncoder(w).Encode(v); err != nil {
 		panic(err)
 	}
+}
+
+func mustReadAll(t *testing.T, r *http.Request) string {
+	t.Helper()
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		t.Fatalf("failed to read request body: %v", err)
+	}
+	return string(body)
 }
 
 func collectProjects(projectChan <-chan *gitlab.Project, errChan <-chan error) ([]*gitlab.Project, error) {
@@ -98,6 +109,21 @@ func TestHasCIConfig(t *testing.T) {
 			t.Error("expected false")
 		}
 	})
+}
+
+func TestParseCommaSeparatedList(t *testing.T) {
+	t.Parallel()
+
+	got := parseCommaSeparatedList(" repo-a, group/repo-b , ,repo-c ")
+	want := []string{"repo-a", "group/repo-b", "repo-c"}
+	if len(got) != len(want) {
+		t.Fatalf("expected %d items, got %d: %#v", len(want), len(got), got)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("expected item %d to be %q, got %q", i, want[i], got[i])
+		}
+	}
 }
 
 func TestIsPermissionError(t *testing.T) {
@@ -177,7 +203,18 @@ func TestBuildGitLabClient_ClientCredentials(t *testing.T) {
 	t.Parallel()
 
 	// Stand up a mock OAuth token endpoint.
+	var (
+		requestPath  string
+		requestScope string
+	)
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestPath = r.URL.Path
+		body, err := url.ParseQuery(mustReadAll(t, r))
+		if err != nil {
+			t.Fatalf("failed to parse token request body: %v", err)
+		}
+		requestScope = body.Get("scope")
+
 		if r.URL.Path != "/oauth/token" {
 			http.NotFound(w, r)
 			return
@@ -195,8 +232,8 @@ func TestBuildGitLabClient_ClientCredentials(t *testing.T) {
 		AuthType:     AuthTypeClientCredentials,
 		ClientID:     "client-id",
 		ClientSecret: "client-secret",
-		Scopes:       "api",
-		BaseURL:      tokenServer.URL,
+		Scopes:       "api, read_user , ",
+		BaseURL:      tokenServer.URL + "/",
 	}
 	opts := []gitlab.ClientOptionFunc{gitlab.WithBaseURL(tokenServer.URL)}
 
@@ -206,6 +243,12 @@ func TestBuildGitLabClient_ClientCredentials(t *testing.T) {
 	}
 	if client == nil {
 		t.Fatal("expected non-nil client")
+	}
+	if requestPath != "/oauth/token" {
+		t.Fatalf("expected token path /oauth/token, got %q", requestPath)
+	}
+	if requestScope != "api read_user" {
+		t.Fatalf("expected normalized scope %q, got %q", "api read_user", requestScope)
 	}
 }
 
@@ -563,6 +606,27 @@ func TestFetchCodeOwners_DefaultBranchFallback(t *testing.T) {
 	}
 }
 
+func TestFetchCodeOwners_InvalidBase64ReturnsError(t *testing.T) {
+	t.Parallel()
+	mux, plugin := setup(t)
+
+	mux.HandleFunc("/api/v4/projects/1/repository/files/CODEOWNERS", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, map[string]any{
+			"file_name": "CODEOWNERS",
+			"encoding":  "base64",
+			"content":   "!!!not-base64!!!",
+		})
+	})
+
+	result, err := plugin.FetchCodeOwners(context.Background(), &gitlab.Project{ID: 1, DefaultBranch: "main"})
+	if err == nil {
+		t.Fatal("expected error for invalid base64 content")
+	}
+	if result != "" {
+		t.Fatalf("expected empty result on decode error, got %q", result)
+	}
+}
+
 // ---- GatherOpenMergeRequests ----
 
 func TestGatherOpenMergeRequests_WithApprovals(t *testing.T) {
@@ -622,6 +686,34 @@ func TestGatherOpenMergeRequests_WithApprovals(t *testing.T) {
 	}
 }
 
+func TestFetchProjects_TrimsRepositoryFilters(t *testing.T) {
+	t.Parallel()
+	mux, plugin := setup(t)
+	plugin.config.IncludedRepositories = " repo-a, repo-b "
+
+	mux.HandleFunc("/api/v4/groups/test-group/projects", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, []map[string]any{
+			{"id": 1, "name": "repo-a", "path": "repo-a", "path_with_namespace": "group/repo-a"},
+			{"id": 2, "name": "repo-b", "path": "repo-b", "path_with_namespace": "group/repo-b"},
+			{"id": 3, "name": "repo-c", "path": "repo-c", "path_with_namespace": "group/repo-c"},
+		})
+	})
+
+	projects, err := collectProjects(plugin.FetchProjects(context.Background()))
+	if err != nil {
+		t.Fatalf("unexpected fetch projects error: %v", err)
+	}
+	if len(projects) != 2 {
+		t.Fatalf("expected 2 matching projects, got %d", len(projects))
+	}
+	if projects[0].Name != "repo-a" {
+		t.Fatalf("expected first project repo-a, got %q", projects[0].Name)
+	}
+	if projects[1].Path != "repo-b" {
+		t.Fatalf("expected second project path repo-b, got %q", projects[1].Path)
+	}
+}
+
 func TestGatherOpenMergeRequests_PermissionError(t *testing.T) {
 	t.Parallel()
 	mux, plugin := setup(t)
@@ -656,8 +748,8 @@ func TestGatherProtectedBranches(t *testing.T) {
 				"merge_access_levels": []map[string]any{
 					{"access_level": 30, "access_level_description": "Developers + Maintainers"},
 				},
-				"allow_force_push":              false,
-				"code_owner_approval_required":  true,
+				"allow_force_push":             false,
+				"code_owner_approval_required": true,
 			},
 		})
 	})
