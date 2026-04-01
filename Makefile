@@ -19,10 +19,10 @@ help-all: ## Display all help items, ie including plumbing targets
 
 
 
-# Bundle the policies into a tarball for OCI registry
-clean: # Cleanup build artifacts
+# Build artifacts management for the Go plugin
+clean: # Cleanup plugin build artifacts
 	@rm -rf dist/*
 
-build: clean ## Build the policy bundle
+build: clean ## Build the Go plugin binary
 	@mkdir -p dist/
 	@go build -o dist/plugin .
