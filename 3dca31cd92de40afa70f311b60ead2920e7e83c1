@@ -1,0 +1,4 @@
+lisa-design:
+- ci.yml is mock-plugin-1's caller as is (trial comment dropped), with all three uses: pinned to compliance-framework/workflows v1.5.2 (6e7fc9c04b59c7d1117938da397f8a6f8df036ab); push trigger stays [main] (default branch is main).
+- .goreleaser.yaml archives.format -> formats: [tar.gz] only; verified a full snapshot release produces the same five archives with the same contents before and after.
+- release.yml and build-and-upload.yml untouched (W3 replaces them).
