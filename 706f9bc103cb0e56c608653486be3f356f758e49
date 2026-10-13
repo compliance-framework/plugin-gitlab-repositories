@@ -1,0 +1,4 @@
+lisa-design:
+- policy_data is stored from ConfigureRequest only (InitRequest has no policy_data); it is set after a successful Configure and cleared (nil) when unset, matching plugin-file-attestation#7.
+- TestConfigureStoresPolicyData runs the real Configure against an httptest GitLab server (base_url) because Configure resolves the group over the API.
+- Pre-existing staticcheck SA1019 (ApprovalsBeforeMerge deprecated, main.go) is left as is: not introduced here, and CI lints only new issues.
