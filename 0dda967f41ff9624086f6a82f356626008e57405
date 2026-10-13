@@ -1,0 +1,2 @@
+lisa-selfreview:
+No findings: diff mirrors the reviewed plugin-github-repositories#26 (branch main instead of master, seed 0.1.0). actionlint, go build/test, goreleaser check + snapshot clean.
