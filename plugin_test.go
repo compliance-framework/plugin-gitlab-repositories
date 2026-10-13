@@ -13,8 +13,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/compliance-framework/agent/runner/proto"
 	"github.com/hashicorp/go-hclog"
 	gitlab "gitlab.com/gitlab-org/api/client-go"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 // setup creates a test HTTP server and a GitLab client pointed at it.
@@ -807,5 +809,52 @@ func TestFetchLatestRelease_NoReleases(t *testing.T) {
 	}
 	if release != nil {
 		t.Errorf("expected nil release, got %+v", release)
+	}
+}
+
+// ---- Configure ----
+
+func TestConfigureStoresPolicyData(t *testing.T) {
+	t.Parallel()
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	t.Cleanup(server.Close)
+
+	mux.HandleFunc("/api/v4/groups/test-group", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, map[string]any{
+			"id":        42,
+			"name":      "test-group",
+			"path":      "test-group",
+			"full_path": "test-group",
+		})
+	})
+
+	policyData, err := structpb.NewStruct(map[string]interface{}{
+		"allowed_visibility": []interface{}{"private"},
+	})
+	if err != nil {
+		t.Fatalf("build policy data: %v", err)
+	}
+
+	plugin := &GitLabReposPlugin{Logger: hclog.NewNullLogger()}
+	config := map[string]string{
+		"token":    "test-token",
+		"group":    "test-group",
+		"base_url": server.URL,
+	}
+
+	if _, err := plugin.Configure(&proto.ConfigureRequest{Config: config, PolicyData: policyData}); err != nil {
+		t.Fatalf("configure: %v", err)
+	}
+	visibility, ok := plugin.policyData["allowed_visibility"].([]interface{})
+	if !ok || len(visibility) != 1 || visibility[0] != "private" {
+		t.Fatalf("unexpected policy data: %#v", plugin.policyData)
+	}
+
+	if _, err := plugin.Configure(&proto.ConfigureRequest{Config: config}); err != nil {
+		t.Fatalf("reconfigure: %v", err)
+	}
+	if plugin.policyData != nil {
+		t.Fatalf("expected policy data to be cleared, got %#v", plugin.policyData)
 	}
 }

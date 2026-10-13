@@ -145,6 +145,7 @@ type GitLabReposPlugin struct {
 	config          *PluginConfig
 	client          *gitlab.Client
 	resolvedGroupID int64
+	policyData      map[string]interface{}
 }
 
 func (l *GitLabReposPlugin) Configure(req *proto.ConfigureRequest) (*proto.ConfigureResponse, error) {
@@ -182,6 +183,12 @@ func (l *GitLabReposPlugin) Configure(req *proto.ConfigureRequest) (*proto.Confi
 	if err := l.resolveConfiguredGroup(context.Background()); err != nil {
 		l.Logger.Error("Error resolving configured group", "group", config.Group, "error", err)
 		return nil, err
+	}
+
+	if policyData := req.GetPolicyData(); policyData != nil {
+		l.policyData = policyData.AsMap()
+	} else {
+		l.policyData = nil
 	}
 
 	return &proto.ConfigureResponse{}, nil
@@ -807,6 +814,7 @@ func (l *GitLabReposPlugin) EvaluatePolicies(ctx context.Context, data *Saturate
 			inventory,
 			actors,
 			activities,
+			l.policyData,
 		)
 		evidence, err := processor.GenerateResults(ctx, policyPath, data)
 		evidences = slices.Concat(evidences, evidence)
