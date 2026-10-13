@@ -55,6 +55,20 @@ When writing OPA/Rego policies for this plugin, they must be added under the `co
 package compliance_framework.deny_critical_severity
 ```
 
+### Policy data
+
+Any `policy_data` set on this plugin's block in the agent configuration is passed
+to every policy evaluation and is available to Rego as `data.<key>`:
+
+```yaml
+plugins:
+  gitlab_repos:
+    # ...plugin settings as above...
+    policy_data:
+      allowed_visibility:
+        - private
+```
+
 ## Releases
 
 This plugin is released using GoReleaser to build binaries, and GOOCI to upload artifacts to OCI,
