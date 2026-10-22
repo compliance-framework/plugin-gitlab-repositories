@@ -5,12 +5,12 @@ go 1.26.1
 require (
 	github.com/compliance-framework/agent v0.9.2
 	github.com/hashicorp/go-hclog v1.6.3
-	github.com/hashicorp/go-plugin v1.7.0
+	github.com/hashicorp/go-plugin v1.8.0
 	github.com/mitchellh/mapstructure v1.5.0
 	gitlab.com/gitlab-org/api/client-go v1.46.0
-	golang.org/x/oauth2 v0.36.0
-	golang.org/x/sync v0.23.0
-	google.golang.org/protobuf v1.36.11
+	golang.org/x/oauth2 v0.37.0
+	golang.org/x/sync v0.24.0
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
