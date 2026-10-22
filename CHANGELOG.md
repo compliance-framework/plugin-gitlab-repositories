@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.1...v0.1.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* **deps:** bump agent to v0.9.3, workflows to v1.7.0 ([#22](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/22)) ([d31aa9a](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/d31aa9afa49f33889e5af841d08b5cfd266553ae))
+* **deps:** update all non-major dependencies ([#20](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/20)) ([cde77f5](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/cde77f527b8d4e73a25fac8c8a5f94a9ec126d1f))
+
 ## [0.1.1](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.0...v0.1.1) (2026-10-14)
 
 
