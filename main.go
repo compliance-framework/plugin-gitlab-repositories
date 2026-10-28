@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/go-hclog"
 	goplugin "github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/mapstructure"
-	gitlab "gitlab.com/gitlab-org/api/client-go"
+	gitlab "gitlab.com/gitlab-org/api/client-go/v3"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )

@@ -15,7 +15,7 @@ import (
 
 	"github.com/compliance-framework/agent/runner/proto"
 	"github.com/hashicorp/go-hclog"
-	gitlab "gitlab.com/gitlab-org/api/client-go"
+	gitlab "gitlab.com/gitlab-org/api/client-go/v3"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	gitlab "gitlab.com/gitlab-org/api/client-go"
+	gitlab "gitlab.com/gitlab-org/api/client-go/v3"
 )
 
 // GatherGroupMembers fetches all members of the configured group, including inherited members
