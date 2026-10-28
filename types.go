@@ -1,7 +1,7 @@
 package main
 
 import (
-	gitlab "gitlab.com/gitlab-org/api/client-go"
+	gitlab "gitlab.com/gitlab-org/api/client-go/v3"
 )
 
 // OpenMergeRequest represents a merge request alongside its per-MR approval state,
