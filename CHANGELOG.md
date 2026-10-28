@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.2](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.1...v0.1.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* **deps:** bump agent to v0.9.3, workflows to v1.7.0 ([#22](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/22)) ([d31aa9a](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/d31aa9afa49f33889e5af841d08b5cfd266553ae))
+* **deps:** bump agent to v0.9.4 ([#24](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/24)) ([954c517](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/954c51785e4a14b725d092bcc7c753f3109b1fd9))
+* **deps:** update all non-major dependencies ([#20](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/20)) ([cde77f5](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/cde77f527b8d4e73a25fac8c8a5f94a9ec126d1f))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go to v3 ([#23](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/23)) ([e5bdd64](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/e5bdd647b51c3ce543312eb9e3a0ee2ef99c87b4))
+
 ## [0.1.1](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.0...v0.1.1) (2026-10-14)
 
 
