@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.3](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.2...v0.1.3) (2026-10-31)
+
+
+### Bug Fixes
+
+* **deps:** build with the go1.26.10 toolchain so Renovate can ship Go security fixes ([#26](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/26)) ([a270046](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/a270046554e6c95f8234954879604258c120f2b4))
+* **deps:** update all non-major dependencies ([#25](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/25)) ([8b98d70](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/8b98d706f621ec5a05dad38d5e8ab43ad0949d20))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.33.0 ([#29](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/29)) ([4c5ebfc](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/4c5ebfc246d1b402af582d123a99ded52e75a7f2))
+
 ## [0.1.2](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.1...v0.1.2) (2026-10-28)
 
 
