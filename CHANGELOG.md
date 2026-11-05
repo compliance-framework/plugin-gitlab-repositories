@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.3...v0.1.4) (2026-11-05)
+
+
+### Bug Fixes
+
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.38.0 ([#32](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/32)) ([eb65a4b](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/eb65a4b0d71bbe15837d3008f51d7a73acad4fd2))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.40.0 ([#34](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/34)) ([299abf0](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/299abf092027bab892c7098bcc8b127f4f27174b))
+
 ## [0.1.3](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.2...v0.1.3) (2026-11-02)
 
 
