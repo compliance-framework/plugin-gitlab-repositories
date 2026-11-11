@@ -2,7 +2,7 @@ module github.com/compliance-framework/plugin-gitlab-repositories
 
 go 1.26.1
 
-toolchain go1.27.3
+toolchain go1.27.4
 
 require (
 	github.com/compliance-framework/agent v0.9.6
