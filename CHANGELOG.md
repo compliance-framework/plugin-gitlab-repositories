@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.4](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.3...v0.1.4) (2026-11-14)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#35](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/35)) ([85cb871](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/85cb871eb121f96b911ba6b156e0f8e08b24e85b))
+* **deps:** update all non-major dependencies ([#39](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/39)) ([b5f8775](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/b5f8775ee263fa1f2f56319f9786dacee331215d))
+* **deps:** update go toolchain directive to v1.27.4 [security] ([#36](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/36)) ([368adea](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/368adea01b20b72e24680968d10dd1e3467b2658))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.38.0 ([#32](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/32)) ([eb65a4b](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/eb65a4b0d71bbe15837d3008f51d7a73acad4fd2))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.40.0 ([#34](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/34)) ([299abf0](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/299abf092027bab892c7098bcc8b127f4f27174b))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.43.0 ([#37](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/37)) ([9956e90](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/9956e9025ba6cdfc52e4cb805a9bc9672e034b89))
+* **deps:** update module golang.org/x/crypto to v0.59.0 [security] ([#38](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/38)) ([0312a8c](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/0312a8c12b92c94899e20c9fd41a83448b86e030))
+
 ## [0.1.3](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.2...v0.1.3) (2026-11-02)
 
 
