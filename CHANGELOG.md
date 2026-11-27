@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.4](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.3...v0.1.4) (2026-11-27)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#35](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/35)) ([85cb871](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/85cb871eb121f96b911ba6b156e0f8e08b24e85b))
+* **deps:** update all non-major dependencies ([#39](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/39)) ([b5f8775](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/b5f8775ee263fa1f2f56319f9786dacee331215d))
+* **deps:** update go toolchain directive to v1.27.4 [security] ([#36](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/36)) ([368adea](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/368adea01b20b72e24680968d10dd1e3467b2658))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.38.0 ([#32](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/32)) ([eb65a4b](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/eb65a4b0d71bbe15837d3008f51d7a73acad4fd2))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.40.0 ([#34](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/34)) ([299abf0](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/299abf092027bab892c7098bcc8b127f4f27174b))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.43.0 ([#37](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/37)) ([9956e90](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/9956e9025ba6cdfc52e4cb805a9bc9672e034b89))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.46.1 ([#40](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/40)) ([0c19fb8](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/0c19fb8ccda104d0a231034ae2191211b909206b))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.48.0 ([#41](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/41)) ([d6bed42](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/d6bed427a9d0dd02f5bbd24d02042919c3d4b24e))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.50.0 ([#42](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/42)) ([25aede2](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/25aede26612e81523cfb11b181e517c0eb98aece))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.51.0 ([#43](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/43)) ([3aca1e1](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/3aca1e1affff5576dbd37fa3cb517f3d4afb8b39))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.53.0 ([#44](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/44)) ([9201d62](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/9201d62a58d87fbded1c105a9f1fba5926a2811d))
+* **deps:** update module gitlab.com/gitlab-org/api/client-go/v3 to v3.54.1 ([#45](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/45)) ([0dd00fb](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/0dd00fb25f5d25f1441c36a1a11ee156763eee24))
+* **deps:** update module golang.org/x/crypto to v0.59.0 [security] ([#38](https://github.com/compliance-framework/plugin-gitlab-repositories/issues/38)) ([0312a8c](https://github.com/compliance-framework/plugin-gitlab-repositories/commit/0312a8c12b92c94899e20c9fd41a83448b86e030))
+
 ## [0.1.3](https://github.com/compliance-framework/plugin-gitlab-repositories/compare/v0.1.2...v0.1.3) (2026-11-02)
 
 
